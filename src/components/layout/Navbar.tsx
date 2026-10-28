@@ -197,90 +197,133 @@ export default function Navbar() {
         </nav>
       </div>
 
-      {/* Mobile Menu Dropdown */}
+      {/* Mobile Drawer (Constrained width with backdrop, NEVER takes full width) */}
       {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-4 pt-3 pb-6 space-y-3 animate-in slide-in-from-top-3">
-          {/* Mobile Search */}
-          <form onSubmit={handleSearchSubmit} className="relative">
-            <input
-              type="text"
-              placeholder="Search laptops, computers, printers..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-4 py-2.5 rounded-xl text-sm bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 border border-transparent focus:border-blue-500 outline-none"
-            />
-            <Search className="w-4 h-4 text-gray-400 absolute left-3 top-3" />
-          </form>
+        <div className="fixed inset-0 z-50 lg:hidden flex justify-end">
+          {/* Dimmed backdrop - click outside to dismiss */}
+          <div
+            className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity animate-in fade-in duration-200"
+            onClick={() => setMobileMenuOpen(false)}
+          />
 
-          {/* Links */}
-          <div className="space-y-1">
-            {navLinks.map((link) => {
-              const isActive = pathname === link.href;
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`flex items-center justify-between p-2.5 rounded-xl text-sm font-semibold transition ${
-                    isActive
-                      ? 'bg-blue-600 text-white'
-                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
-                  }`}
-                >
-                  <span className="flex items-center gap-2">
-                    {link.icon && <link.icon className="w-4 h-4" />}
-                    {link.name}
+          {/* Drawer container - strictly constrained width: 300px (max 85vw on small screens) */}
+          <div className="relative w-[300px] max-w-[85vw] bg-white dark:bg-gray-900 h-full shadow-2xl flex flex-col z-10 border-l border-gray-200 dark:border-gray-800 animate-in slide-in-from-right duration-300">
+            {/* Drawer Header */}
+            <div className="p-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between bg-gray-50/70 dark:bg-gray-800/50">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white">
+                  <Laptop className="w-4 h-4" />
+                </div>
+                <div>
+                  <span className="font-bold text-sm text-gray-900 dark:text-white block line-clamp-1">
+                    {siteConfig.name}
                   </span>
-                  {link.badge && (
-                    <span className="text-[10px] px-2 py-0.5 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 font-bold uppercase">
-                      {link.badge}
-                    </span>
-                  )}
-                </Link>
-              );
-            })}
-          </div>
+                  <span className="text-[10px] text-gray-500">Navigation Menu</span>
+                </div>
+              </div>
+              <button
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+                aria-label="Close menu"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
 
-          {/* Mobile Quick CTAs */}
-          <div className="pt-2 grid grid-cols-2 gap-2">
-            <button
-              onClick={() => {
-                setMobileMenuOpen(false);
-                openRepairModal();
-              }}
-              className="py-2.5 px-3 rounded-xl bg-blue-600 text-white font-semibold text-xs flex items-center justify-center gap-1.5 shadow"
-            >
-              <Wrench className="w-3.5 h-3.5" />
-              <span>Book Repair</span>
-            </button>
+            {/* Drawer Body (Scrollable) */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+              {/* Search */}
+              <form onSubmit={handleSearchSubmit} className="relative">
+                <input
+                  type="text"
+                  placeholder="Search laptops, printers..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-8 pr-3 py-2 rounded-xl text-xs bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 border border-transparent focus:border-blue-500 outline-none"
+                />
+                <Search className="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-2.5" />
+              </form>
 
-            <button
-              onClick={() => {
-                setMobileMenuOpen(false);
-                openSellModal();
-              }}
-              className="py-2.5 px-3 rounded-xl bg-emerald-600 text-white font-semibold text-xs flex items-center justify-center gap-1.5 shadow"
-            >
-              <RefreshCw className="w-3.5 h-3.5" />
-              <span>Sell Device</span>
-            </button>
-          </div>
+              {/* Navigation Links */}
+              <nav className="space-y-1">
+                {navLinks.map((link) => {
+                  const isActive = pathname === link.href;
+                  return (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={`flex items-center justify-between p-2.5 rounded-xl text-xs font-semibold transition ${
+                        isActive
+                          ? 'bg-blue-600 text-white shadow-xs'
+                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                      }`}
+                    >
+                      <span className="flex items-center gap-2.5">
+                        {link.icon && <link.icon className="w-4 h-4" />}
+                        {link.name}
+                      </span>
+                      {link.badge && (
+                        <span
+                          className={`text-[9px] px-1.5 py-0.5 rounded font-bold uppercase ${
+                            isActive
+                              ? 'bg-blue-700 text-white'
+                              : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300'
+                          }`}
+                        >
+                          {link.badge}
+                        </span>
+                      )}
+                    </Link>
+                  );
+                })}
+              </nav>
 
-          {/* Contact Bar */}
-          <div className="pt-3 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between text-xs text-gray-500">
-            <a href={`tel:${siteConfig.phoneRaw}`} className="flex items-center gap-1.5 text-blue-600 dark:text-blue-400 font-medium">
-              <Phone className="w-3.5 h-3.5" />
-              <span>{siteConfig.phone}</span>
-            </a>
-            <a
-              href={`https://wa.me/${siteConfig.whatsappNumber}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1 text-emerald-600 font-semibold"
-            >
-              <MessageCircle className="w-3.5 h-3.5 fill-current" />
-              <span>WhatsApp Chat</span>
-            </a>
+              {/* Quick Action CTAs */}
+              <div className="pt-2 space-y-2 border-t border-gray-100 dark:border-gray-800">
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    openRepairModal();
+                  }}
+                  className="w-full py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-xs transition"
+                >
+                  <Wrench className="w-3.5 h-3.5" />
+                  <span>Book Repair Inspection</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    openSellModal();
+                  }}
+                  className="w-full py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-xs transition"
+                >
+                  <RefreshCw className="w-3.5 h-3.5" />
+                  <span>Sell / Exchange Device</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Drawer Footer with Helpline & WhatsApp */}
+            <div className="p-4 border-t border-gray-100 dark:border-gray-800 bg-gray-50/70 dark:bg-gray-800/50 space-y-2 text-xs">
+              <a
+                href={`tel:${siteConfig.phoneRaw}`}
+                className="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 font-medium"
+              >
+                <Phone className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+                <span>Helpline: {siteConfig.phone}</span>
+              </a>
+              <a
+                href={`https://wa.me/${siteConfig.whatsappNumber}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 text-emerald-600 font-bold"
+              >
+                <MessageCircle className="w-3.5 h-3.5 fill-current shrink-0" />
+                <span>WhatsApp: {siteConfig.phone}</span>
+              </a>
+            </div>
           </div>
         </div>
       )}
