@@ -17,6 +17,7 @@ import {
   Menu,
   X,
   ShieldCheck,
+  CheckCircle2,
   Sparkles,
   RefreshCw,
   HardDrive,
@@ -197,122 +198,128 @@ export default function Navbar() {
         </nav>
       </div>
 
-      {/* Mobile Drawer (Constrained width with backdrop, NEVER takes full width) */}
+      {/* Mobile Menu Dropdown (Anchored under navbar, neat constrained width, ALL options visible!) */}
       {mobileMenuOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden flex justify-end">
-          {/* Dimmed backdrop - click outside to dismiss */}
+        <>
+          {/* Dimmed backdrop - click anywhere outside to close */}
           <div
-            className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity animate-in fade-in duration-200"
+            className="fixed inset-0 z-40 bg-black/60 backdrop-blur-xs lg:hidden"
             onClick={() => setMobileMenuOpen(false)}
           />
 
-          {/* Drawer container - strictly constrained width: 300px (max 85vw on small screens) */}
-          <div className="relative w-[300px] max-w-[85vw] bg-white dark:bg-gray-900 h-full shadow-2xl flex flex-col z-10 border-l border-gray-200 dark:border-gray-800 animate-in slide-in-from-right duration-300">
-            {/* Drawer Header */}
-            <div className="p-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between bg-gray-50/70 dark:bg-gray-800/50">
+          {/* Floating Dropdown Card (Anchored to top right, width 300px - NEVER full screen!) */}
+          <div className="absolute right-3 top-full mt-2 z-50 w-72 sm:w-80 max-w-[calc(100vw-1.5rem)] bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-800 p-4 space-y-3 lg:hidden max-h-[85vh] overflow-y-auto animate-in fade-in slide-in-from-top-2 duration-200">
+            {/* Header / Brand info with Close Button */}
+            <div className="flex items-center justify-between pb-2.5 border-b border-gray-100 dark:border-gray-800">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white">
+                <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center text-white">
                   <Laptop className="w-4 h-4" />
                 </div>
                 <div>
-                  <span className="font-bold text-sm text-gray-900 dark:text-white block line-clamp-1">
+                  <span className="font-bold text-xs text-gray-900 dark:text-white block line-clamp-1">
                     {siteConfig.name}
                   </span>
-                  <span className="text-[10px] text-gray-500">Navigation Menu</span>
+                  <span className="text-[10px] text-gray-500">Menu Options</span>
                 </div>
               </div>
               <button
                 onClick={() => setMobileMenuOpen(false)}
-                className="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+                className="p-1 rounded-md text-gray-400 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition"
                 aria-label="Close menu"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
-            {/* Drawer Body (Scrollable) */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
-              {/* Search */}
-              <form onSubmit={handleSearchSubmit} className="relative">
-                <input
-                  type="text"
-                  placeholder="Search laptops, printers..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-8 pr-3 py-2 rounded-xl text-xs bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 border border-transparent focus:border-blue-500 outline-none"
-                />
-                <Search className="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-2.5" />
-              </form>
+            {/* Mobile Search */}
+            <form onSubmit={handleSearchSubmit} className="relative">
+              <input
+                type="text"
+                placeholder="Search laptops, printers..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-8 pr-3 py-2 rounded-xl text-xs bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 border border-transparent focus:border-blue-500 outline-none"
+              />
+              <Search className="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-2.5" />
+            </form>
 
-              {/* Navigation Links */}
-              <nav className="space-y-1">
-                {navLinks.map((link) => {
-                  const isActive = pathname === link.href;
-                  return (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className={`flex items-center justify-between p-2.5 rounded-xl text-xs font-semibold transition ${
-                        isActive
-                          ? 'bg-blue-600 text-white shadow-xs'
-                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
-                      }`}
-                    >
-                      <span className="flex items-center gap-2.5">
-                        {link.icon && <link.icon className="w-4 h-4" />}
-                        {link.name}
+            {/* All Options / Navigation Links */}
+            <nav className="space-y-1">
+              {navLinks.map((link) => {
+                const isActive = pathname === link.href;
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`flex items-center justify-between p-2.5 rounded-xl text-xs font-semibold transition ${
+                      isActive
+                        ? 'bg-blue-600 text-white shadow-xs'
+                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                    }`}
+                  >
+                    <span className="flex items-center gap-2.5">
+                      {link.icon && <link.icon className="w-4 h-4" />}
+                      {link.name}
+                    </span>
+                    {link.badge && (
+                      <span
+                        className={`text-[9px] px-1.5 py-0.5 rounded font-bold uppercase ${
+                          isActive
+                            ? 'bg-blue-700 text-white'
+                            : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300'
+                        }`}
+                      >
+                        {link.badge}
                       </span>
-                      {link.badge && (
-                        <span
-                          className={`text-[9px] px-1.5 py-0.5 rounded font-bold uppercase ${
-                            isActive
-                              ? 'bg-blue-700 text-white'
-                              : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300'
-                          }`}
-                        >
-                          {link.badge}
-                        </span>
-                      )}
-                    </Link>
-                  );
-                })}
-              </nav>
+                    )}
+                  </Link>
+                );
+              })}
 
-              {/* Quick Action CTAs */}
-              <div className="pt-2 space-y-2 border-t border-gray-100 dark:border-gray-800">
-                <button
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    openRepairModal();
-                  }}
-                  className="w-full py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-xs transition"
-                >
-                  <Wrench className="w-3.5 h-3.5" />
-                  <span>Book Repair Inspection</span>
-                </button>
+              <Link
+                href="/track-repair"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center gap-2 p-2.5 rounded-xl text-xs font-semibold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/40 transition"
+              >
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                <span>Track Repair Status</span>
+              </Link>
+            </nav>
 
-                <button
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    openSellModal();
-                  }}
-                  className="w-full py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-xs transition"
-                >
-                  <RefreshCw className="w-3.5 h-3.5" />
-                  <span>Sell / Exchange Device</span>
-                </button>
-              </div>
+            {/* Quick Action CTAs */}
+            <div className="pt-2 grid grid-cols-2 gap-2 border-t border-gray-100 dark:border-gray-800">
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  openRepairModal();
+                }}
+                className="py-2 px-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-[11px] flex items-center justify-center gap-1.5 shadow-xs transition"
+              >
+                <Wrench className="w-3 h-3" />
+                <span>Book Repair</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  openSellModal();
+                }}
+                className="py-2 px-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] flex items-center justify-center gap-1.5 shadow-xs transition"
+              >
+                <RefreshCw className="w-3 h-3" />
+                <span>Sell Device</span>
+              </button>
             </div>
 
-            {/* Drawer Footer with Helpline & WhatsApp */}
-            <div className="p-4 border-t border-gray-100 dark:border-gray-800 bg-gray-50/70 dark:bg-gray-800/50 space-y-2 text-xs">
+            {/* Direct Contact Bar */}
+            <div className="pt-2.5 border-t border-gray-100 dark:border-gray-800 space-y-1.5 text-[11px]">
               <a
                 href={`tel:${siteConfig.phoneRaw}`}
-                className="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 font-medium"
+                className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-blue-600 font-medium"
               >
                 <Phone className="w-3.5 h-3.5 text-blue-600 shrink-0" />
-                <span>Helpline: {siteConfig.phone}</span>
+                <span>Call: {siteConfig.phone}</span>
               </a>
               <a
                 href={`https://wa.me/${siteConfig.whatsappNumber}`}
@@ -325,7 +332,7 @@ export default function Navbar() {
               </a>
             </div>
           </div>
-        </div>
+        </>
       )}
     </header>
   );
